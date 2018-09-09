@@ -57,7 +57,7 @@ BOOTIMAGE="$1"
 
 # Flags
 KEEPVERITY=false
-KEEPFORCEENCRYPT=false
+KEEPFORCEENCRYPT=true
 
 chmod -R 755 .
 
@@ -126,15 +126,10 @@ if [ $(grep_prop ro.build.version.sdk) -ge 26 ]; then
   for i in /system/vendor/etc/fstab*; do
     [ -f "$i" ] || continue
     if ! $printed; then
-      $KEEPVERITY && ui_print "- Disabling fe in vendor fstabs..." || ui_print "- Disabling dm_verity & fe in vendor fstabs..."
+      $KEEPVERITY || ui_print "- Disabling dm_verity in vendor fstabs..."
       printed=true
     fi
     ui_print "  Patching: $i"
-    sed -i "
-      s/forceencrypt=/encryptable=/g
-      s/forcefdeorfbe=/encryptable=/g
-      s/fileencryption=/encryptable=/g
-    " "$i"
     $KEEPVERITY || sed -i "
       s/,verify//g
       s/verify,//g
@@ -165,16 +160,11 @@ mkdir ftmp
 printed=false
 for i in $(cpio -t -F ramdisk.cpio | grep "fstab."); do
   if ! $printed; then
-    $KEEPVERITY && ui_print "- Disabling fe in kernel fstabs..." || ui_print "- Disabling dm_verity & fe in kernel fstabs..."
+    $KEEPVERITY || ui_print "- Disabling dm_verity in kernel fstabs..."
     printed=true
   fi
   ui_print "   Patching $i"
   ./magiskboot --cpio ramdisk.cpio "extract $i ftmp/$i"
-  sed -i "
-    s/forceencrypt=/encryptable=/g
-    s/forcefdeorfbe=/encryptable=/g
-    s/fileencryption=/encryptable=/g
-  " "ftmp/$i"
   $KEEPVERITY || sed -i "
     s/,verify//g
     s/verify,//g
