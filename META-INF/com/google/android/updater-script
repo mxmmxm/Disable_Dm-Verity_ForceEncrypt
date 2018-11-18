@@ -38,7 +38,7 @@ setup_flashable
 ##########################################################################################
 
 ui_print "**************************************"
-ui_print "* DmVerity and ForceEncrypt Disabler *"
+ui_print "*          DmVerity Disabler         *"
 ui_print "*            By: Zackptg5            *"
 ui_print "*   Heavily based on the work of:    *"
 ui_print "*      TopJohnWu and Jcadduono       *"
