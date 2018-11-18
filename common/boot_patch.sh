@@ -158,7 +158,7 @@ MAGISK_PATCHED=false
 
 mkdir ftmp
 printed=false
-for i in $(cpio -t -F ramdisk.cpio | grep "fstab."); do
+for i in $(cpio -t -F ramdisk.cpio | grep "fstab.\|.fstab"); do
   if ! $printed; then
     $KEEPVERITY || ui_print "- Disabling dm_verity in kernel fstabs..."
     printed=true
